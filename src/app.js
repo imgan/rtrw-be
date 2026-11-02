@@ -15,7 +15,9 @@ import { pool } from './config/db.js';
 const app = express();
 
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-app.use(cors({ origin: process.env.CORS_ORIGIN?.split(',') || true }));
+// CORS_ORIGIN: daftar domain dipisah koma, atau * untuk semua domain.
+const corsOrigin = process.env.CORS_ORIGIN?.trim();
+app.use(cors({ origin: !corsOrigin || corsOrigin === '*' ? '*' : corsOrigin.split(',').map((o) => o.trim()) }));
 app.use(express.json({ limit: '1mb' }));
 if (process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
 
